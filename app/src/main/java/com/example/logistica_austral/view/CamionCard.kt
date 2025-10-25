@@ -17,7 +17,9 @@ import com.example.logistica_austral.model.Camion
 fun CamionCard(
     camion: Camion,
     onAgregar: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    showAgregar: Boolean = true
+
 ) {
     Card(
         modifier = modifier,
@@ -48,14 +50,14 @@ fun CamionCard(
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
-
-                Spacer(Modifier.height(12.dp))
-
-                Button(
-                    onClick = onAgregar,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text("Agregar a carrito")
+                if (showAgregar) {
+                    Spacer(Modifier.height(12.dp))
+                    Button(
+                        onClick = onAgregar,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text("Agregar a carrito")
+                    }
                 }
             }
         }
