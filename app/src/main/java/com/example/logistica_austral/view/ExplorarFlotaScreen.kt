@@ -20,12 +20,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import com.example.logistica_austral.viewmodel.HomeViewModel
+import com.example.logistica_austral.viewmodel.ExplorarViewModel
 
-@OptIn(ExperimentalMaterial3Api::class) // top app bar esta como experimental con material3, de esta forma nps permite usar experimentales de la libreria
-@Composable //  recordar: indica que esta funcion define una UI en compose
-fun HomeScreen(
-    viewModel: HomeViewModel = remember { HomeViewModel() }
+@OptIn(ExperimentalMaterial3Api::class) // top app bar esta como experimental con material3, de esta forma nos permite usar experimentales de la libreria
+@Composable // recordar: indica que esta funcion define una UI en compose
+fun ExplorarFlotaScreen(
+    viewModel: ExplorarViewModel = remember { ExplorarViewModel() }
 ) {
     val context = LocalContext.current // opobtiene el contexto actual (funciona para el toast)
     val camiones by viewModel.camiones.collectAsState() // obtiene la lista en tiempo real
@@ -34,12 +34,12 @@ fun HomeScreen(
     Scaffold( // estrucuta la pantalla con una "barra superior"
         topBar = {
             TopAppBar(
-                title = { Text("Explorar Flota", style = MaterialTheme.typography.titleLarge) }
+                title = { Text("Explorar Flota Usados", style = MaterialTheme.typography.titleLarge) }
             )
         }
     ) { inner -> // para evitar que el contenido quede debajo de la barra
         LazyVerticalGrid(
-            columns = GridCells.Fixed(2), // 2 por pantalla (2 cards)
+            columns = GridCells.Fixed(1), // 2 por pantalla (2 cards)
             modifier = Modifier
                 .fillMaxSize()
                 .padding(inner)

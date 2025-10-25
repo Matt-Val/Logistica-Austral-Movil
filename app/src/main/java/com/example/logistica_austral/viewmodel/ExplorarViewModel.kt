@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class HomeViewModel : ViewModel() {
+class ExplorarViewModel : ViewModel() {
 
     private val _camiones = MutableStateFlow<List<Camion>>(emptyList())
     val camiones: StateFlow<List<Camion>> = _camiones
