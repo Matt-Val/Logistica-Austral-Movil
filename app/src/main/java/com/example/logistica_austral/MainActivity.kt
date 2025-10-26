@@ -28,6 +28,8 @@ import com.example.logistica_austral.viewmodel.RegistroViewModel
 
 // --- IMPORTACIÓN DEL TEMA ---
 import com.example.logistica_austral.ui.theme.LogisticaAustralTheme
+import com.example.logistica_austral.view.CarritoScreen
+import com.example.logistica_austral.view.ExplorarFlotaScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
