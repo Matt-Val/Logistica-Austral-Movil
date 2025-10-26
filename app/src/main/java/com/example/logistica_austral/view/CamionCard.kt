@@ -66,7 +66,7 @@ fun CamionCard(
                     ) {
                         Text("Agregar a carrito")
                     }
-                } else if (showQuitar) {
+                } else if (showQuitar) { // se muestra uno de los dos botones, logica con los "switches"
                     Spacer(Modifier.height(12.dp))
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
                         IconButton(onClick = onQuitar) {
