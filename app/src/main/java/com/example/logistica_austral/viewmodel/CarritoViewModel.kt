@@ -10,8 +10,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch // necesario para lanzar corrutinas
 
-class CarritoViewModel(carrito: Carrito) : ViewModel() {
+class CarritoViewModel(private val carrito: Carrito) : ViewModel() {
 
     private val _allCamiones = MutableStateFlow(CamionSampleData.items) // para la "demo" de items, stateflow mutable
 
@@ -23,4 +24,10 @@ class CarritoViewModel(carrito: Carrito) : ViewModel() {
         carrito.observeCamiones(allCamiones)
             .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
+    // NUEVO: accion para quitar un camion del carrito
+    fun onQuitarDelCarrito(camion: Camion) {
+        viewModelScope.launch {
+            carrito.remove(camion.id)
+        }
+    }
 }

@@ -11,15 +11,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.logistica_austral.R
 import com.example.logistica_austral.model.Camion
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Delete
 
 // esta tarjeta la quiero reutilizar, para no tener que escribir producto x producto, very helpful
 @Composable
 fun CamionCard(
     camion: Camion,
-    onAgregar: () -> Unit,
+    onAgregar: () -> Unit, // para boton de agregar al carrito
     modifier: Modifier = Modifier,
-    showAgregar: Boolean = true
-
+    showAgregar: Boolean = true,
+    onQuitar: () -> Unit = {},  // para boton quitar de carrito
+    showQuitar: Boolean = false
 ) {
     Card(
         modifier = modifier,
@@ -37,6 +40,11 @@ fun CamionCard(
             )
 
             Column(Modifier.padding(12.dp)) {
+                Text(
+                    text = "$ ${camion.annio}", // simula precio
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.SemiBold
+                )
                 Text(
                     text = "${camion.marca} ${camion.modelo}",
                     style = MaterialTheme.typography.titleMedium,
@@ -57,6 +65,16 @@ fun CamionCard(
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Text("Agregar a carrito")
+                    }
+                } else if (showQuitar) {
+                    Spacer(Modifier.height(12.dp))
+                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                        IconButton(onClick = onQuitar) {
+                            Icon(
+                                imageVector = Icons.Outlined.Delete,
+                                contentDescription = "Quitar del carrito"
+                            )
+                        }
                     }
                 }
             }

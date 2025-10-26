@@ -1,5 +1,6 @@
 package com.example.logistica_austral.view
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -7,7 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ArrowBack
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -35,10 +36,26 @@ fun CarritoScreen(nav: NavHostController) {
                 navigationIcon = {
                     // boton para volver atras, con iconos nativo material3
                     IconButton(onClick = { nav.popBackStack() }) {
-                        Icon(Icons.Outlined.ArrowBack, contentDescription = "Volver")
+                        Icon(Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = "Volver")
                     }
                 }
             )
+        },
+        bottomBar = {
+            // barra inferior fija que contiene el boton principal de accion de compra
+            BottomAppBar {
+                Button(
+                    modifier = Modifier
+                        .padding(horizontal = 12.dp)
+                        .fillMaxSize(fraction = 1f), // ocupa el alto disponible de la barra para una zona táctil cómoda
+                    onClick = {
+                        // SIMULACION de compra, muestro un toast picante
+                        Toast.makeText(context, "Compra realizada", Toast.LENGTH_LONG).show()
+                    }
+                ) {
+                    Text("Realizar compra")
+                }
+            }
         }
     ) { inner ->
         // este es el formato para la columna que tendra los items
@@ -51,8 +68,13 @@ fun CarritoScreen(nav: NavHostController) {
             contentPadding = PaddingValues(bottom = 12.dp)
         ) {
             items(items) { camion ->
-                // reutilizo la misma card
-                CamionCard(camion = camion, onAgregar = {}, showAgregar = false)
+                CamionCard(
+                    camion = camion,
+                    onAgregar = {},
+                    showAgregar = false,
+                    onQuitar = { vm.onQuitarDelCarrito(camion) }, // agrego el boton de quitar, reutilizando la misma card
+                    showQuitar = true
+                )
             }
         }
     }
