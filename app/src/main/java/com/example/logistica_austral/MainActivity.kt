@@ -30,6 +30,7 @@ import com.example.logistica_austral.viewmodel.RegistroViewModel
 import com.example.logistica_austral.ui.theme.LogisticaAustralTheme
 import com.example.logistica_austral.view.CarritoScreen
 import com.example.logistica_austral.view.ExplorarFlotaScreen
+import com.example.logistica_austral.view.EliminarCamionScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -103,6 +104,11 @@ class MainActivity : ComponentActivity() {
                     // Ruta para carrito
                     composable("carrito") {
                         CarritoScreen(nav = navController)
+                    }
+
+                    // Ruta para eliminar camión
+                    composable("eliminarCamion") {
+                        EliminarCamionScreen(nav = navController)
                     }
                 }
             }

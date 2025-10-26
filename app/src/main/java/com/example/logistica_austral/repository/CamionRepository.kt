@@ -22,4 +22,9 @@ class CamionRepository(private val camionDao: CamionDao) {
     suspend fun obtenerTodos(): List<Camion> {
         return camionDao.obtenerCamiones()
     }
+
+    // Elimina un camión existente
+    suspend fun eliminar(camion: Camion) {
+        camionDao.eliminar(camion)
+    }
 }

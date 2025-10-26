@@ -37,6 +37,10 @@ fun HomeScreen(navController: NavController) {
                 Text("Registrar Nuevo Camión",
                     color = Color.White)
             }
+
+            Button(onClick = { navController.navigate("eliminarCamion") }) {
+                Text("Eliminar Camión", color = Color.White)
+            }
         }
     }
 }

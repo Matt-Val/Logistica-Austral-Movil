@@ -26,14 +26,14 @@ class ExplorarViewModel(
         // carga DAO, y utiliza algunos demo
         viewModelScope.launch {
             // 1) leer de base
-            val desdeDb = repository.obtenerTodos()
+            var desdeDb = repository.obtenerTodos()
             if (desdeDb.isEmpty()) {
                 // 2) semilla inicial con sample data para demo
                 repository.insertarTodos(CamionSampleData.items)
-                _camiones.value = CamionSampleData.items
-            } else {
-                _camiones.value = desdeDb
+                desdeDb = repository.obtenerTodos()
             }
+            _camiones.value = desdeDb
+
 
             // con esto simula la carga de elementos del carrito de persistencia
             delay(800)
