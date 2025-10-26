@@ -11,6 +11,7 @@ data class CamionUIState (
     var disponibilidad: Boolean = true,
     var estado : String = "",
     val descripcion : String = "",
-    val traccion : String = ""
+    val traccion : String = "",
+    val precio: String = ""
 
 )

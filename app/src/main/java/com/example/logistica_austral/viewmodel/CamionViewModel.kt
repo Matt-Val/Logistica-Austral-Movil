@@ -62,6 +62,10 @@ class CamionViewModel(private val repository: CamionRepository) : ViewModel() {
         _uiState.update { it.copy(traccion = traccion) }
         _uiErrors.update { it.copy(esErrorTraccion = null) }
     }
+    fun onPrecioChange(precio: String) {
+        _uiState.update { it.copy(precio = precio) }
+        _uiErrors.update { it.copy(esErrorPrecio = null) }
+    }
     // 3.- Validacion
     private fun validarFormulario():Boolean {
         val state = _uiState.value
@@ -114,6 +118,14 @@ class CamionViewModel(private val repository: CamionRepository) : ViewModel() {
             _uiErrors.update { it.copy(esErrorCapacidad = "La capacidad debe ser un número válido") }
             esValido = false
         }
+
+        if (state.precio.isBlank()) {
+            _uiErrors.update { it.copy(esErrorPrecio = "El precio no debe estar vacío") }
+            esValido = false
+        } else if (state.precio.toIntOrNull() == null) {
+            _uiErrors.update { it.copy(esErrorPrecio = "El precio debe ser un número válido") }
+            esValido = false
+        }
         return esValido
     }
 
@@ -126,6 +138,7 @@ class CamionViewModel(private val repository: CamionRepository) : ViewModel() {
             // Usamos toIntOrNull con un valor predeterminado como medida de seguridad.
             val annioInt = state.annio.toIntOrNull() ?: 0
             val capacidadInt = state.capacidad.toIntOrNull() ?: 0
+            val precioInt = state.precio.toIntOrNull() ?: 0
 
             val nuevoCamion = Camion(
                 patente = state.patente,
@@ -137,7 +150,8 @@ class CamionViewModel(private val repository: CamionRepository) : ViewModel() {
                 disponibilidad = state.disponibilidad,
                 estado = state.estado,
                 descripcion = state.descripcion,
-                traccion = state.traccion
+                traccion = state.traccion,
+                precio = precioInt
             )
             viewModelScope.launch{
                 repository.insertar(nuevoCamion)
@@ -148,4 +162,3 @@ class CamionViewModel(private val repository: CamionRepository) : ViewModel() {
         }
     }
 }
-

@@ -258,7 +258,28 @@ fun FormularioCamionScreen(
                     },
                     modifier = Modifier.fillMaxWidth()
                 )
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(8.dp))
+
+                // CAMPO: Precio
+                OutlinedTextField(
+                    value = uiState.precio,
+                    onValueChange = { viewModel.onPrecioChange(it) },
+                    label = { Text("Precio (CLP)") },
+                    placeholder = { Text("EJ: 5000000") },
+                    colors = TextFieldDefaults.colors(
+                        focusedTextColor = Color(0xFF0F9D58),
+                        unfocusedTextColor = Color(0xFF0F9D58),
+                    ),
+                    isError = uiErrors.esErrorPrecio != null,
+                    supportingText = {
+                        if (uiErrors.esErrorPrecio != null) {
+                            Text(uiErrors.esErrorPrecio!!, color = Color.White)
+                        }
+                    },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Spacer(modifier = Modifier.height(8.dp))
 
                 // SWITCH PARA DISPONIBILIDAD
                 Row(

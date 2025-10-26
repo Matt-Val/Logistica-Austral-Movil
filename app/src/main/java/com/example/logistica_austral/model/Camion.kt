@@ -15,5 +15,6 @@ data class Camion(
     var disponibilidad: Boolean,
     var estado: String, // Cambia con el tiempo
     val descripcion: String,
-    val traccion: String
+    val traccion: String,
+    val precio: Int
 )

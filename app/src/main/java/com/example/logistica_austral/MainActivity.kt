@@ -94,6 +94,16 @@ class MainActivity : ComponentActivity() {
                             viewModel = camionViewModel
                         )
                     }
+
+                    // ruta rapida para probar explorar usados
+                    composable("explorar") {
+                        ExplorarFlotaScreen(nav = navController)
+                    }
+
+                    // Ruta para carrito
+                    composable("carrito") {
+                        CarritoScreen(nav = navController)
+                    }
                 }
             }
         }

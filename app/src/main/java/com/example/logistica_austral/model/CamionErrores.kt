@@ -11,5 +11,6 @@ data class CamionErrores(
     val esErrorEstado: String? = null,
     val esErrorDescripcion: String? = null,
     val esErrorTraccion: String? = null,
+    val esErrorPrecio: String? = null,
 
     )

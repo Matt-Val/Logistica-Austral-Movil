@@ -33,7 +33,7 @@ fun CarritoScreen(nav: NavHostController) {
     val carritoItems by vm.camionesEnCarrito.collectAsState()
 
     // para el total del carrito: uso annio como precio simulado (annio es string lo convierto a int)
-    val total = remember(carritoItems) { carritoItems.sumOf { it.annio.toIntOrNull() ?: 0 } } //val total = remember(items) { items.sumOf { it.annio } }
+    val total = remember(carritoItems) { carritoItems.sumOf { it.precio } }
 
     Scaffold(
         topBar = {

@@ -41,7 +41,7 @@ fun CamionCard(
 
             Column(Modifier.padding(12.dp)) {
                 Text(
-                    text = "$ ${camion.annio}", // simula precio
+                    text = "$ ${camion.precio}",
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.SemiBold
                 )

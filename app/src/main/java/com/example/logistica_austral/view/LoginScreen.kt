@@ -129,6 +129,16 @@ fun LoginScreen(
                     Text("Ingresar")
                 }
 
+                Spacer(modifier = Modifier.height(8.dp))
+
+                // boton para probar la navegacion a explorar flota usados
+                Button(
+                    onClick = { navController.navigate("explorar") },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("Probar Explorar Flota")
+                }
+
                 TextButton(
                     onClick = { navController.navigate("registroScreen") },
                     modifier = Modifier.fillMaxWidth()
