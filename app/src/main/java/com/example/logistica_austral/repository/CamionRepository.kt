@@ -13,8 +13,13 @@ class CamionRepository(private val camionDao: CamionDao) {
         camionDao.insertar(camion)
     }
 
-    // Se pueden agregar mas funciones como esta
-    // suspend fun obtenerTodos(): List<Camion> {
-    //    return camionDao.obtenerTodos()
-    // }
+    // Inserta una lista de camiones (utilidad para sembrar datos demo)
+    suspend fun insertarTodos(camiones: List<Camion>) {
+        camiones.forEach { camionDao.insertar(it) }
+    }
+
+    // Obtiene todos los camiones ordenados por patente DESC
+    suspend fun obtenerTodos(): List<Camion> {
+        return camionDao.obtenerCamiones()
+    }
 }

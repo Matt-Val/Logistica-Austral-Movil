@@ -5,12 +5,16 @@ import androidx.lifecycle.viewModelScope
 import com.example.logistica_austral.model.Camion
 import com.example.logistica_austral.model.CamionSampleData
 import com.example.logistica_austral.model.Carrito
+import com.example.logistica_austral.repository.CamionRepository
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class ExplorarViewModel(private val carrito: Carrito) : ViewModel() {
+class ExplorarViewModel(
+    private val carrito: Carrito,
+    private val repository: CamionRepository
+) : ViewModel() {
 
     private val _camiones = MutableStateFlow<List<Camion>>(emptyList())
     val camiones: StateFlow<List<Camion>> = _camiones
@@ -19,9 +23,17 @@ class ExplorarViewModel(private val carrito: Carrito) : ViewModel() {
     val isLoadingCart: StateFlow<Boolean> = _isLoadingCart
 
     init {
-        // carga la “demo” (luego con DAO sin tocar la UI)
+        // carga DAO, y utiliza algunos demo
         viewModelScope.launch {
-            _camiones.value = CamionSampleData.items
+            // 1) leer de base
+            val desdeDb = repository.obtenerTodos()
+            if (desdeDb.isEmpty()) {
+                // 2) semilla inicial con sample data para demo
+                repository.insertarTodos(CamionSampleData.items)
+                _camiones.value = CamionSampleData.items
+            } else {
+                _camiones.value = desdeDb
+            }
 
             // con esto simula la carga de elementos del carrito de persistencia
             delay(800)

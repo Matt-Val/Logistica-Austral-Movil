@@ -30,13 +30,20 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.logistica_austral.model.Carrito
 import com.example.logistica_austral.viewmodel.ExplorarViewModel
+import com.example.logistica_austral.model.AppDatabase
+import com.example.logistica_austral.repository.CamionRepository
 
 @OptIn(ExperimentalMaterial3Api::class) // top app bar esta como experimental con material3, de esta forma nos permite usar experimentales de la libreria
 @Composable // recordar: indica que esta funcion define una UI en compose
 fun ExplorarFlotaScreen(nav: NavHostController) {
     val context = LocalContext.current // opobtiene el contexto actual (funciona para el toast)
     val carrito = remember { Carrito.getInstance(context) }
-    val viewModel = remember { ExplorarViewModel(carrito) }
+
+    // Construye Repository desde Room una sola vez
+    val db = remember { AppDatabase.getDatabase(context) }
+    val camionRepository = remember { CamionRepository(db.camionDao()) }
+
+    val viewModel = remember { ExplorarViewModel(carrito, camionRepository) }
 
     val camiones by viewModel.camiones.collectAsState() // obtiene la lista en tiempo real
     val isLoading by viewModel.isLoadingCart.collectAsState()

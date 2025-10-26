@@ -22,6 +22,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.logistica_austral.model.Carrito
+import com.example.logistica_austral.model.AppDatabase
+import com.example.logistica_austral.repository.CamionRepository
 import com.example.logistica_austral.viewmodel.CarritoViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -29,7 +31,8 @@ import com.example.logistica_austral.viewmodel.CarritoViewModel
 fun CarritoScreen(nav: NavHostController) {
     val context = LocalContext.current
     val carrito = remember { Carrito.getInstance(context) }
-    val vm = remember { CarritoViewModel(carrito) }
+    val db = remember { AppDatabase.getDatabase(context) }
+    val vm = remember { CarritoViewModel(carrito, CamionRepository(db.camionDao())) }
     val carritoItems by vm.camionesEnCarrito.collectAsState()
 
     // para el total del carrito: uso annio como precio simulado (annio es string lo convierto a int)

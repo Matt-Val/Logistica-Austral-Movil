@@ -6,8 +6,8 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 
 
-@Database(entities = [Camion::class, Usuario::class], version = 1, exportSchema = false)
-// Crea la base de datos con las tablas Camion y Usuario, y la versión 1.
+@Database(entities = [Camion::class, Usuario::class], version = 2, exportSchema = false)
+// Crea la base de datos con las tablas Camion y Usuario
 
 abstract class AppDatabase : RoomDatabase() {
     abstract fun camionDao(): CamionDao
