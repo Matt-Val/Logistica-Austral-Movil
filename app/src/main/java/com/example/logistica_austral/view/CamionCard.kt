@@ -13,6 +13,7 @@ import com.example.logistica_austral.R
 import com.example.logistica_austral.model.Camion
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Delete
+import coil.compose.rememberAsyncImagePainter
 
 // esta tarjeta la quiero reutilizar, para no tener que escribir producto x producto, very helpful
 @Composable
@@ -30,14 +31,26 @@ fun CamionCard(
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column {
-            // IMAGEN SUPERIOR
-            Image(
-                painter = painterResource(id = R.drawable.camion), // drawable en comun para probar
-                contentDescription = null, // decorativa
-                contentScale = ContentScale.Crop, // asegura que la card mantenga tamano consistente recortando la imagen si es necesario
-                modifier = Modifier.fillMaxWidth()
-                    .height(140.dp) // altura fija para uniformidad entre cards
-            )
+            // IMAGEN SUPERIOR (usa uri si disponible)
+            if (camion.imagenUri != null) {
+                Image(
+                    painter = rememberAsyncImagePainter(model = camion.imagenUri),
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(140.dp)
+                )
+            } else {
+                Image(
+                    painter = painterResource(id = R.drawable.camion), // drawable en comun para probar
+                    contentDescription = null, // decorativa
+                    contentScale = ContentScale.Crop, // asegura que la card mantenga tamano consistente recortando la imagen si es necesario
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(140.dp) // altura fija para uniformidad entre cards
+                )
+            }
 
             Column(Modifier.padding(12.dp)) {
                 Text(

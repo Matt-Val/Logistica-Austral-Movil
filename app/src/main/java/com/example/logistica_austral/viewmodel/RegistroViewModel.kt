@@ -70,15 +70,20 @@ class RegistroViewModel(private val repository: UsuarioRepository) : ViewModel()
 
         // Crear y Guardar Usuario
         viewModelScope.launch {
-            val nuevoUsuario = Usuario(
-                nombre = state.nombre,
-                correo = state.correo,
-                contrasena = state.contrasena
-            )
+            try {
+                val nuevoUsuario = Usuario(
+                    nombre = state.nombre,
+                    correo = state.correo,
+                    contrasena = state.contrasena
+                )
 
-            repository.insertar(nuevoUsuario)
-            _mensaje.value = "¡Usuario registrado con éxito!"
-            _registroExitoso.value = true // Avisa a la vista para que navegue
+                repository.insertar(nuevoUsuario)
+                _mensaje.value = "¡Usuario registrado con éxito!"
+                _registroExitoso.value = true // Avisa a la vista para que navegue
+            } catch (e: Exception) {
+                _mensaje.value = "Error al registrar: ${e.message ?: "desconocido"}" // evita crash
+                _registroExitoso.value = false
+            }
         }
     }
 }

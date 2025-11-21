@@ -1,4 +1,5 @@
 package com.example.logistica_austral.model
+import android.net.Uri
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
@@ -16,5 +17,6 @@ data class Camion(
     var estado: String, // Cambia con el tiempo
     val descripcion: String,
     val traccion: String,
-    val precio: Int
+    val precio: Int,
+    val imagenUri: Uri? = null
 )

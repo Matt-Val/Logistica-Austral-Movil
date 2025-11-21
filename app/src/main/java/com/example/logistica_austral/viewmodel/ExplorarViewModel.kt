@@ -23,19 +23,17 @@ class ExplorarViewModel(
     val isLoadingCart: StateFlow<Boolean> = _isLoadingCart
 
     init {
-        // carga DAO, y utiliza algunos demo
         viewModelScope.launch {
-            // 1) leer de base
-            var desdeDb = repository.obtenerTodos()
-            if (desdeDb.isEmpty()) {
-                // 2) semilla inicial con sample data para demo
-                repository.insertarTodos(CamionSampleData.items)
-                desdeDb = repository.obtenerTodos()
+            try {
+                var desdeDb = repository.obtenerTodos()
+                if (desdeDb.isEmpty()) {
+                    repository.insertarTodos(CamionSampleData.items)
+                    desdeDb = repository.obtenerTodos()
+                }
+                _camiones.value = desdeDb
+            } catch (e: Exception) {
+                _camiones.value = emptyList() // evita crash
             }
-            _camiones.value = desdeDb
-
-
-            // con esto simula la carga de elementos del carrito de persistencia
             delay(800)
             _isLoadingCart.value = false
         }
@@ -43,6 +41,6 @@ class ExplorarViewModel(
 
     // para agregar camion por id, al carrito
     fun onAgregarACarrito(camion: Camion) = viewModelScope.launch {
-        carrito.add(camion.id)
+        try { carrito.add(camion.id) } catch (_: Exception) { }
     }
 }

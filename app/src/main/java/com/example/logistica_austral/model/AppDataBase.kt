@@ -4,9 +4,10 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 
-
-@Database(entities = [Camion::class, Usuario::class], version = 2, exportSchema = false)
+@Database(entities = [Camion::class, Usuario::class], version = 3, exportSchema = false)
+@TypeConverters(UriConverters::class)
 // Crea la base de datos con las tablas Camion y Usuario
 
 abstract class AppDatabase : RoomDatabase() {
@@ -21,7 +22,9 @@ abstract class AppDatabase : RoomDatabase() {
                     context.applicationContext,
                     AppDatabase::class.java,
                     "logistica_austral_db"
-                ).build()
+                )
+                    .fallbackToDestructiveMigration() // reinicia si no hay migraciones D:
+                    .build()
                 INSTANCE = instance
                 instance
             }

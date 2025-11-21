@@ -1,5 +1,7 @@
 package com.example.logistica_austral.model
 
+import android.net.Uri
+
 data class CamionUIState (
 
     val patente: String = "",
@@ -12,6 +14,7 @@ data class CamionUIState (
     var estado : String = "",
     val descripcion : String = "",
     val traccion : String = "",
-    val precio: String = ""
+    val precio: String = "",
+    val imagenUri: Uri? = null // nueva propiedad
 
 )

@@ -1,38 +1,37 @@
 package com.example.logistica_austral.view
 
+import android.Manifest
+import android.content.Context
+import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.Environment
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Switch
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import com.example.logistica_austral.viewmodel.CamionViewModel
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
+import androidx.navigation.NavController
+import coil.compose.rememberAsyncImagePainter
 import com.example.logistica_austral.R
+import com.example.logistica_austral.viewmodel.CamionViewModel
+import java.io.File
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 // (Usamos @OptIn para el TopAppBar)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -46,8 +45,36 @@ fun FormularioCamionScreen(
     val uiState by viewModel.uiState.collectAsState()
     val uiErrors by viewModel.uiErrors.collectAsState()
     val mensaje by viewModel.mensaje.collectAsState()
+    val context = LocalContext.current
 
+    // --- Lanzadores para galería y cámara ---
+    val pickImageLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        viewModel.onImagenUriChange(uri)
+    }
 
+    var cameraTempUri by remember { mutableStateOf<Uri?>(null) }
+
+    val takePictureLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.TakePicture()
+    ) { success ->
+        if (success) {
+            viewModel.onImagenUriChange(cameraTempUri)
+        }
+    }
+
+    val requestCameraPermission = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        if (granted) {
+            val uri = createImageUri(context)
+            cameraTempUri = uri
+            takePictureLauncher.launch(uri)
+        }
+    }
+
+    // --- UI ---
     Box(modifier = Modifier.fillMaxSize()) {
         // Agregamos la imagen de fondo
         Image(
@@ -74,6 +101,26 @@ fun FormularioCamionScreen(
                     .padding(16.dp)
                     .verticalScroll(rememberScrollState()) // Permite deslizar
             ) {
+                // --- Vista previa de imagen ---
+                PreviewImagenCamion(uiState.imagenUri)
+                Spacer(Modifier.height(12.dp))
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Button(onClick = { pickImageLauncher.launch("image/*") }, modifier = Modifier.weight(1f)) {
+                        Text("Galería")
+                    }
+                    Button(onClick = {
+                        if (ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+                            val uri = createImageUri(context)
+                            cameraTempUri = uri
+                            takePictureLauncher.launch(uri)
+                        } else {
+                            requestCameraPermission.launch(Manifest.permission.CAMERA)
+                        }
+                    }, modifier = Modifier.weight(1f)) {
+                        Text("Cámara")
+                    }
+                }
+                Spacer(Modifier.height(24.dp))
 
                 // CAMPOS DE TEXTO (TEXTFIELDS)
 
@@ -310,4 +357,39 @@ fun FormularioCamionScreen(
             }
         }
     }
+}
+
+@Composable
+private fun PreviewImagenCamion(uri: Uri?) {
+    if (uri != null) {
+        Image(
+            painter = rememberAsyncImagePainter(model = uri),
+            contentDescription = "Imagen del camión",
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(180.dp),
+            contentScale = ContentScale.Crop
+        )
+    } else {
+        // Placeholder simple
+        Image(
+            painter = painterResource(id = R.drawable.camion),
+            contentDescription = "Imagen por defecto",
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(180.dp),
+            contentScale = ContentScale.Crop
+        )
+    }
+}
+
+private fun createImageUri(context: Context): Uri {
+    val timestamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+    val storageDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+    val file = File.createTempFile("JPEG_${timestamp}_", ".jpg", storageDir)
+    return FileProvider.getUriForFile(
+        context,
+        "${context.packageName}.fileprovider",
+        file
+    )
 }

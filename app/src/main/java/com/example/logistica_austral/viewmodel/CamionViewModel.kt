@@ -1,15 +1,16 @@
 package com.example.logistica_austral.viewmodel
 
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import com.example.logistica_austral.model.Camion
 import com.example.logistica_austral.model.CamionErrores
 import com.example.logistica_austral.model.CamionUIState
+import com.example.logistica_austral.repository.CamionRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import androidx.lifecycle.viewModelScope
-import com.example.logistica_austral.repository.CamionRepository
 import kotlinx.coroutines.launch
 
 class CamionViewModel(private val repository: CamionRepository) : ViewModel() {
@@ -23,6 +24,10 @@ class CamionViewModel(private val repository: CamionRepository) : ViewModel() {
 
 
     // 2. Funciones "OnChange" para cada campo
+    fun onImagenUriChange(uri: Uri?) {
+        _uiState.update { it.copy(imagenUri = uri) }
+    }
+
     fun onPatenteChange(patente: String) {
         _uiState.update { it.copy(patente = patente) }
         _uiErrors.update { it.copy(esErrorPatente = null) }
@@ -131,34 +136,32 @@ class CamionViewModel(private val repository: CamionRepository) : ViewModel() {
 
     // 4.- Función de Registro
     fun registrarCamion() {
-        if (validarFormulario()) {
-            val state = _uiState.value
-
-            // La validacion asegura que los campos no esten nulos ni vacios.
-            // Usamos toIntOrNull con un valor predeterminado como medida de seguridad.
-            val annioInt = state.annio.toIntOrNull() ?: 0
-            val capacidadInt = state.capacidad.toIntOrNull() ?: 0
-            val precioInt = state.precio.toIntOrNull() ?: 0
-
-            val nuevoCamion = Camion(
-                patente = state.patente,
-                marca = state.marca,
-                modelo = state.modelo,
-                annio = annioInt,
-                tipo = state.tipo,
-                capacidad = capacidadInt,
-                disponibilidad = state.disponibilidad,
-                estado = state.estado,
-                descripcion = state.descripcion,
-                traccion = state.traccion,
-                precio = precioInt
-            )
-            viewModelScope.launch{
+        if (!validarFormulario()) { _mensaje.value= "Error: Revise todos los campos."; return }
+        val state = _uiState.value
+        val annioInt = state.annio.toIntOrNull() ?: 0
+        val capacidadInt = state.capacidad.toIntOrNull() ?: 0
+        val precioInt = state.precio.toIntOrNull() ?: 0
+        val nuevoCamion = Camion(
+            patente = state.patente,
+            marca = state.marca,
+            modelo = state.modelo,
+            annio = annioInt,
+            tipo = state.tipo,
+            capacidad = capacidadInt,
+            disponibilidad = state.disponibilidad,
+            estado = state.estado,
+            descripcion = state.descripcion,
+            traccion = state.traccion,
+            precio = precioInt,
+            imagenUri = state.imagenUri
+        )
+        viewModelScope.launch {
+            try {
                 repository.insertar(nuevoCamion)
                 _mensaje.value = "Camion ${nuevoCamion.patente} registrado con éxito!"
+            } catch (e: Exception) {
+                _mensaje.value = "Error al registrar camión: ${e.message ?: "desconocido"}" // evita crash
             }
-        } else {
-            _mensaje.value= "Error: Revise todos los campos."
         }
     }
 }
