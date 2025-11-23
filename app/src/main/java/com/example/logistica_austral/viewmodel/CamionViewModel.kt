@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import com.example.logistica_austral.model.Camion
 import com.example.logistica_austral.model.CamionErrores
 import com.example.logistica_austral.model.CamionUIState
+import com.example.logistica_austral.data.model.CamionDto
 import com.example.logistica_austral.repository.CamionRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -170,28 +171,23 @@ class CamionViewModel(private val repository: CamionRepository) : ViewModel() {
         if (!validarFormulario()) { _mensaje.value = "Error: Revise todos los campos."; return }
         if (imagenFile == null) { _mensaje.value = "Debe seleccionar o tomar una imagen"; return }
         val state = _uiState.value
-        val annioInt = state.annio.toIntOrNull() ?: 0
-        val capacidadInt = state.capacidad.toIntOrNull() ?: 0
-        val precioInt = state.precio.toIntOrNull() ?: 0
-        val camionBase = Camion(
+        val dto = CamionDto(
             patente = state.patente,
             marca = state.marca,
             modelo = state.modelo,
-            annio = annioInt,
+            annio = state.annio.toIntOrNull() ?: 0,
             tipo = state.tipo,
-            capacidad = capacidadInt,
+            capacidad = state.capacidad.toIntOrNull() ?: 0,
             disponibilidad = state.disponibilidad,
             estado = state.estado,
             descripcion = state.descripcion,
             traccion = state.traccion,
-            precio = precioInt,
-            imagenUri = null
+            precio = state.precio.toIntOrNull() ?: 0
         )
         viewModelScope.launch {
             try {
-                val resultado = repository.crearRemotoConImagen(camionBase, imagenFile)
+                val resultado = repository.crearRemotoConImagen(dto, imagenFile)
                 _mensaje.value = "Camión ${resultado.patente} creado remoto con éxito!"
-
             } catch (e: Exception) {
                 _mensaje.value = "Error remoto: ${e.message ?: "desconocido"}";
             }
