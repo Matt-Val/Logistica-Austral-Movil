@@ -27,8 +27,11 @@ import androidx.core.content.FileProvider
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.example.logistica_austral.R
+import com.example.logistica_austral.util.ImagenCompressor
 import com.example.logistica_austral.viewmodel.CamionViewModel
 import java.io.File
+import java.io.FileOutputStream
+import java.io.InputStream
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -345,14 +348,21 @@ fun FormularioCamionScreen(
                 Button(
                     onClick = { viewModel.registrarCamion() },
                     modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text(text = "Registrar Camión",
-                        color = Color.White)
-                }
+                ) { Text(text = "Registrar Local", color = Color.White) }
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Button(
+                    onClick = {
+                        val uri = uiState.imagenUri
+                        // COMPRESIÓN: si existe Uri, se comprime y redimensiona (max 720px) antes de enviar
+                        val file = uri?.let { ImagenCompressor.comprimir(context, it) }
+                        viewModel.registrarCamionRemotoConImagen(file)
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                ) { Text(text = "Registrar Remoto con Imagen", color = Color.White) }
 
                 Spacer(modifier = Modifier.height(16.dp))
-
-                // Muestra el mensaje de éxito o error general
                 Text(text = mensaje, color = Color.White)
             }
         }

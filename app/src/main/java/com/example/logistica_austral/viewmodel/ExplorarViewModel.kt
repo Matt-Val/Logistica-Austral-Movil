@@ -25,12 +25,9 @@ class ExplorarViewModel(
     init {
         viewModelScope.launch {
             try {
-                var desdeDb = repository.obtenerTodos()
-                if (desdeDb.isEmpty()) {
-                    repository.insertarTodos(CamionSampleData.items)
-                    desdeDb = repository.obtenerTodos()
-                }
-                _camiones.value = desdeDb
+                // desde la api
+                _camiones.value = repository.obtenerTodos()
+
             } catch (e: Exception) {
                 _camiones.value = emptyList() // evita crash
             }

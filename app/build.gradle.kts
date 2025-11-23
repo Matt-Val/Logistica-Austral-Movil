@@ -49,7 +49,15 @@ dependencies {
     implementation("androidx.room:room-ktx:2.6.1")
     // periferico
     implementation("io.coil-kt:coil-compose:2.5.0")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
+    // jetpack compose y material3 2025
+    implementation("androidx.activity:activity-compose:1.9.0")
+    implementation("androidx.compose.material3:material3:1.3.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
+    // retrofit y gson converter
+    implementation("com.squareup.retrofit2:retrofit:2.11.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.11.0")
+    // corrutina para asincronicas
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)

@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
+import java.io.File
 
 class CamionViewModel(private val repository: CamionRepository) : ViewModel() {
     // 1. Declarar los estados
@@ -153,7 +154,7 @@ class CamionViewModel(private val repository: CamionRepository) : ViewModel() {
             descripcion = state.descripcion,
             traccion = state.traccion,
             precio = precioInt,
-            imagenUri = state.imagenUri
+            imagenUri = state.imagenUri?.toString() // convierte Uri? a String?
         )
         viewModelScope.launch {
             try {
@@ -161,6 +162,38 @@ class CamionViewModel(private val repository: CamionRepository) : ViewModel() {
                 _mensaje.value = "Camion ${nuevoCamion.patente} registrado con éxito!"
             } catch (e: Exception) {
                 _mensaje.value = "Error al registrar camión: ${e.message ?: "desconocido"}" // evita crash
+            }
+        }
+    }
+
+    fun registrarCamionRemotoConImagen(imagenFile: File?) {
+        if (!validarFormulario()) { _mensaje.value = "Error: Revise todos los campos."; return }
+        if (imagenFile == null) { _mensaje.value = "Debe seleccionar o tomar una imagen"; return }
+        val state = _uiState.value
+        val annioInt = state.annio.toIntOrNull() ?: 0
+        val capacidadInt = state.capacidad.toIntOrNull() ?: 0
+        val precioInt = state.precio.toIntOrNull() ?: 0
+        val camionBase = Camion(
+            patente = state.patente,
+            marca = state.marca,
+            modelo = state.modelo,
+            annio = annioInt,
+            tipo = state.tipo,
+            capacidad = capacidadInt,
+            disponibilidad = state.disponibilidad,
+            estado = state.estado,
+            descripcion = state.descripcion,
+            traccion = state.traccion,
+            precio = precioInt,
+            imagenUri = null
+        )
+        viewModelScope.launch {
+            try {
+                val resultado = repository.crearRemotoConImagen(camionBase, imagenFile)
+                _mensaje.value = "Camión ${resultado.patente} creado remoto con éxito!"
+
+            } catch (e: Exception) {
+                _mensaje.value = "Error remoto: ${e.message ?: "desconocido"}";
             }
         }
     }

@@ -1,5 +1,5 @@
 package com.example.logistica_austral.model
-import android.net.Uri
+
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
@@ -18,5 +18,6 @@ data class Camion(
     val descripcion: String,
     val traccion: String,
     val precio: Int,
-    val imagenUri: Uri? = null
+    // ahora guardo como String? porque el backend retorna la ruta relativa "/camiones/xxxx.png" y Room maneja strings sin necesitar TypeConverter.
+    val imagenUri: String? = null
 )

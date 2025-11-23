@@ -16,6 +16,10 @@ import androidx.compose.material.icons.outlined.Delete
 import coil.compose.rememberAsyncImagePainter
 
 // esta tarjeta la quiero reutilizar, para no tener que escribir producto x producto, very helpful
+private const val BASE_URL_IMAGEN = "http://35.171.234.213:8080" // ajustar si cambia
+
+private fun Camion.imagenUrlCompleta(): String? = imagenUri?.let { if (it.startsWith("http")) it else BASE_URL_IMAGEN + it }
+
 @Composable
 fun CamionCard(
     camion: Camion,
@@ -34,7 +38,7 @@ fun CamionCard(
             // IMAGEN SUPERIOR (usa uri si disponible)
             if (camion.imagenUri != null) {
                 Image(
-                    painter = rememberAsyncImagePainter(model = camion.imagenUri),
+                    painter = rememberAsyncImagePainter(model = camion.imagenUrlCompleta()),
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
