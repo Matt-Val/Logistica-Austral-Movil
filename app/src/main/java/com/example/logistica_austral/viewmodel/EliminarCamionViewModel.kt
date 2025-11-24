@@ -16,23 +16,37 @@ class EliminarCamionViewModel(private val repository: CamionRepository): ViewMod
     private val _isLoading = MutableStateFlow(true)
     val isLoading: StateFlow<Boolean> = _isLoading
 
+    // estado de error: api
+    private val _error = MutableStateFlow<String?>(null)
+    val error: StateFlow<String?> = _error
+
     init {
         refrescar(simularCarga = true)
     }
 
     fun refrescar(simularCarga: Boolean = false) = viewModelScope.launch {
         _isLoading.value = true
-        val data = repository.obtenerTodos()
-        if (simularCarga) {
-            delay(800) // simula tiempo de carga
+        try {
+            val data = repository.obtenerTodos()
+            if (simularCarga) {
+                delay(800) // simula tiempo de carga
+            }
+            _camiones.value = data
+        } catch (e: Exception) {
+            _camiones.value = emptyList()
+            _error.value = "Error al cargar. Intenta mas tarde"
         }
-        _camiones.value = data
         _isLoading.value = false
     }
 
     fun eliminar(camion: Camion) = viewModelScope.launch {
-        repository.eliminar(camion)
-        // recargar lista luego de eliminar, sin demora artificial
-        refrescar(simularCarga = false)
+        try {
+            repository.eliminar(camion)
+            refrescar(simularCarga = false)
+        } catch (e: Exception) {
+            _error.value = "Error al eliminar. Intenta mas tarde"
+        }
     }
+
+    fun clearError() { _error.value = null }
 }

@@ -3,7 +3,6 @@ package com.example.logistica_austral.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.logistica_austral.model.Camion
-import com.example.logistica_austral.model.CamionSampleData
 import com.example.logistica_austral.model.Carrito
 import com.example.logistica_austral.repository.CamionRepository
 import kotlinx.coroutines.delay
@@ -22,14 +21,20 @@ class ExplorarViewModel(
     private val _isLoadingCart = MutableStateFlow(true)
     val isLoadingCart: StateFlow<Boolean> = _isLoadingCart
 
+    // nuevo estado de error para mostrar mensaje si la API falla
+    private val _error = MutableStateFlow<String?>(null)
+    val error: StateFlow<String?> = _error
+
     init {
         viewModelScope.launch {
             try {
                 // desde la api
                 _camiones.value = repository.obtenerTodos()
 
-            } catch (e: Exception) {
-                _camiones.value = emptyList() // evita crash
+            } catch (_: Exception) {
+                // evita crash y expone mensaje para la UI
+                _camiones.value = emptyList()
+                _error.value = "Error al cargar. Intenta mas tarde"
             }
             delay(800)
             _isLoadingCart.value = false
@@ -40,4 +45,7 @@ class ExplorarViewModel(
     fun onAgregarACarrito(camion: Camion) = viewModelScope.launch {
         try { carrito.add(camion.id) } catch (_: Exception) { }
     }
+
+    // permitir a la UI limpiar el estado de error luego de mostrar el Toast
+    fun clearError() { _error.value = null }
 }

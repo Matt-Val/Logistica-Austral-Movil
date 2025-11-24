@@ -20,6 +20,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -47,7 +48,15 @@ fun ExplorarFlotaScreen(nav: NavHostController) {
 
     val camiones by viewModel.camiones.collectAsState() // obtiene la lista en tiempo real
     val isLoading by viewModel.isLoadingCart.collectAsState()
+    val error by viewModel.error.collectAsState()
 
+    // efecto para mostrar toast de error una sola vez
+    LaunchedEffect(error) {
+        if (error != null) {
+            Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
+            viewModel.clearError()
+        }
+    }
 
     Scaffold( // estrucuta la pantalla con una "barra superior"
         topBar = {
