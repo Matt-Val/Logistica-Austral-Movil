@@ -1,6 +1,10 @@
 package com.example.logistica_austral.view
 
+import android.content.ActivityNotFoundException
+import android.content.Intent
+import android.net.Uri
 import android.widget.Toast
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -13,6 +17,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ShoppingCart
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -27,12 +32,18 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.logistica_austral.model.Carrito
 import com.example.logistica_austral.viewmodel.ExplorarViewModel
 import com.example.logistica_austral.model.AppDatabase
 import com.example.logistica_austral.repository.CamionRepository
+import java.net.URLEncoder
+import com.example.logistica_austral.R
+import androidx.compose.foundation.layout.size
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.graphics.Color
 
 @OptIn(ExperimentalMaterial3Api::class) // top app bar esta como experimental con material3, de esta forma nos permite usar experimentales de la libreria
 @Composable // recordar: indica que esta funcion define una UI en compose
@@ -69,6 +80,27 @@ fun ExplorarFlotaScreen(nav: NavHostController) {
                     }
                 }
             )
+        },
+        floatingActionButton = {
+            // boton flotante API whatsApp
+            FloatingActionButton(
+                onClick = {
+                    abrirWhatsApp(
+                        context,
+                        viewModel.whatsappNumeroEmpresa,
+                        viewModel.whatsappMensaje
+                    )
+                },
+                containerColor = Color(0xFF25D366), // color del contenedor
+                contentColor = Color.White
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.wsp),
+                    contentDescription = "Contactar por WhatsApp",
+                    modifier = Modifier.size(32.dp), // tamano de icono personalizado, (en caso de imagenes mas grandes)
+                    contentScale = ContentScale.Fit
+                )
+            }
         }
     ) { inner -> // para evitar que el contenido quede debajo de la barra
         if (isLoading) {
@@ -112,5 +144,20 @@ fun ExplorarFlotaScreen(nav: NavHostController) {
                 }
             }
         }
+    }
+}
+
+// utilidad para: abre WhatsApp con numero y mensaje prellenado
+private fun abrirWhatsApp(context: android.content.Context, numeroTelefono: String, mensaje: String) {
+    try {
+        val urlMensaje = URLEncoder.encode(mensaje, "UTF-8")
+        val uri = Uri.parse("https://api.whatsapp.com/send?phone=$numeroTelefono&text=$urlMensaje")
+        val intent = Intent(Intent.ACTION_VIEW, uri)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        context.startActivity(intent)
+    } catch (e: ActivityNotFoundException) {
+        Toast.makeText(context, "No se encontro WhatsApp instalado", Toast.LENGTH_SHORT).show()
+    } catch (e: Exception) {
+        Toast.makeText(context, "No fue posible abrir WhatsApp", Toast.LENGTH_SHORT).show()
     }
 }

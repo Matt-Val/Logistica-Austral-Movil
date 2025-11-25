@@ -15,6 +15,10 @@ class ExplorarViewModel(
     private val repository: CamionRepository
 ) : ViewModel() {
 
+    // datos para contacto por WhatsApp
+    val whatsappNumeroEmpresa: String = "56912345678"
+    val whatsappMensaje: String = "Hola, necesito ayuda con los camiones usados disponibles que estan a la venta."
+
     private val _camiones = MutableStateFlow<List<Camion>>(emptyList())
     val camiones: StateFlow<List<Camion>> = _camiones
 
