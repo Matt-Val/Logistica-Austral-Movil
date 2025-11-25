@@ -30,14 +30,14 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.logistica_austral.model.AppDatabase
 import com.example.logistica_austral.repository.CamionRepository
-import com.example.logistica_austral.viewmodel.EliminarCamionViewModel
+import com.example.logistica_austral.viewmodel.VerCamionViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EliminarCamionScreen(nav: NavHostController) {
+fun VerCamionScreen(nav: NavHostController) {
     val context = LocalContext.current
     val db = remember { AppDatabase.getDatabase(context) }
-    val vm = remember { EliminarCamionViewModel(CamionRepository(db.camionDao())) }
+    val vm = remember { VerCamionViewModel(CamionRepository(db.camionDao())) }
     val camiones by vm.camiones.collectAsState()
     val isLoading by vm.isLoading.collectAsState()
     val error by vm.error.collectAsState()
@@ -52,7 +52,7 @@ fun EliminarCamionScreen(nav: NavHostController) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Eliminar Camión") },
+                title = { Text("Lista de camiones usados") },
                 navigationIcon = {
                     IconButton(onClick = { nav.popBackStack() }) {
                         Icon(
@@ -97,7 +97,14 @@ fun EliminarCamionScreen(nav: NavHostController) {
                                 Toast.LENGTH_SHORT
                             ).show()
                         },
-                        showQuitar = true
+                        showQuitar = false,
+                        onVerDetalles = {
+                            Toast.makeText(context, "Ver detalles: ${camion.patente}", Toast.LENGTH_SHORT).show()
+                        },
+                        onEditar = {
+                            nav.navigate("editarCamion/${camion.id}")
+                        },
+                        showAcciones = true
                     )
                 }
             }

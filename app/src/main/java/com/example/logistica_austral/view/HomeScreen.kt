@@ -38,8 +38,8 @@ fun HomeScreen(navController: NavController) {
                     color = Color.White)
             }
 
-            Button(onClick = { navController.navigate("eliminarCamion") }) {
-                Text("Eliminar Camión", color = Color.White)
+            Button(onClick = { navController.navigate("verCamion") }) {
+                Text("Ver Camiones", color = Color.White)
             }
         }
     }

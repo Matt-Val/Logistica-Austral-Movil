@@ -21,16 +21,6 @@ import retrofit2.HttpException
 // para poder acceder a las funciones de la base de datos.
 class CamionRepository(private val camionDao: CamionDao) {
 
-    // Esta función llama a la función 'insertar' del DAO.
-    // La marcamos como 'suspend' porque el DAO es asíncrono.
-    suspend fun insertar(camion: Camion) {
-        camionDao.insertar(camion)
-    }
-
-    // Inserta una lista de camiones (utilidad para sembrar datos demo)
-    suspend fun insertarTodos(camiones: List<Camion>) {
-        camiones.forEach { camionDao.insertar(it) }
-    }
 
     // Obtiene todos los camiones ordenados por patente DESC
     suspend fun obtenerTodos(): List<Camion> {
@@ -74,5 +64,13 @@ class CamionRepository(private val camionDao: CamionDao) {
             // si ocurre un error http, lanza una excepcion con el codigo y mensaje
             throw RuntimeException("http ${e.code()} al crear: ${e.message()}")
         }
+    }
+
+    suspend fun obtenerPorId(id: Int): Camion {
+        return RetrofitInstance.api.getCamion(id)
+    }
+
+    suspend fun actualizarCamion(id: Int, dto: CamionDto): Camion {
+        return RetrofitInstance.api.updateCamion(id, dto)
     }
 }

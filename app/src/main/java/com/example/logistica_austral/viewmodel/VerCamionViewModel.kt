@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class EliminarCamionViewModel(private val repository: CamionRepository): ViewModel() {
+class VerCamionViewModel(private val repository: CamionRepository): ViewModel() {
     private val _camiones = MutableStateFlow<List<Camion>>(emptyList())
     val camiones: StateFlow<List<Camion>> = _camiones
 

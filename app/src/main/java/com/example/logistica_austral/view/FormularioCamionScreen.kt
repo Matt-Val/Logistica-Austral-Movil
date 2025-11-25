@@ -344,14 +344,6 @@ fun FormularioCamionScreen(
                 }
                 Spacer(modifier = Modifier.height(24.dp))
 
-                // BOTÓN DE ACCIÓN Y MENSAJE
-                Button(
-                    onClick = { viewModel.registrarCamion() },
-                    modifier = Modifier.fillMaxWidth()
-                ) { Text(text = "Registrar Local", color = Color.White) }
-
-                Spacer(modifier = Modifier.height(8.dp))
-
                 Button(
                     onClick = {
                         val uri = uiState.imagenUri
@@ -360,7 +352,7 @@ fun FormularioCamionScreen(
                         viewModel.registrarCamionRemotoConImagen(file)
                     },
                     modifier = Modifier.fillMaxWidth()
-                ) { Text(text = "Registrar Remoto con Imagen", color = Color.White) }
+                ) { Text(text = "Registrar nuevo camión", color = Color.White) }
 
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(text = mensaje, color = Color.White)

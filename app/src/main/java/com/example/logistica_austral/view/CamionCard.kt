@@ -17,6 +17,7 @@ import coil.compose.rememberAsyncImagePainter
 
 // esta tarjeta la quiero reutilizar, para no tener que escribir producto x producto, very helpful
 private const val BASE_URL_IMAGEN = "http://35.171.234.213:8080" // ajustar si cambia
+private val ACCION_BUTTON_HEIGHT = 40.dp // altura unificada para fila de accionees con botones
 
 private fun Camion.imagenUrlCompleta(): String? = imagenUri?.let { if (it.startsWith("http")) it else BASE_URL_IMAGEN + it }
 
@@ -27,7 +28,10 @@ fun CamionCard(
     modifier: Modifier = Modifier,
     showAgregar: Boolean = true,
     onQuitar: () -> Unit = {},  // para boton quitar de carrito
-    showQuitar: Boolean = false
+    showQuitar: Boolean = false,
+    onVerDetalles: () -> Unit = {},
+    onEditar: () -> Unit = {},
+    showAcciones: Boolean = false // para acciones de administrador: muestra fila con Ver detalles / Editar cam. / Eliminar
 ) {
     Card(
         modifier = modifier,
@@ -83,10 +87,70 @@ fun CamionCard(
                     ) {
                         Text("Agregar a carrito")
                     }
-                } else if (showQuitar) { // se muestra uno de los dos botones, logica con los "switches"
+                } else if (showAcciones) {
+                    // ACCIONES ADMINISTRADOR:
+                    Spacer(Modifier.height(12.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Button(
+                            onClick = onVerDetalles,
+                            modifier = Modifier
+                                .weight(1f)
+                                .height(ACCION_BUTTON_HEIGHT),
+                            shape = MaterialTheme.shapes.large,
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.primary,
+                                contentColor = MaterialTheme.colorScheme.onPrimary
+                            )
+                        ) { Text("Ver detalles") }
+
+
+                        Button(
+                            onClick = onEditar,
+                            modifier = Modifier
+                                .weight(1f)
+                                .height(ACCION_BUTTON_HEIGHT),
+                            shape = MaterialTheme.shapes.large,
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.primary,
+                                contentColor = MaterialTheme.colorScheme.onPrimary
+                            )
+                        ) { Text("Editar camion") }
+
+
+                        Button(
+                            onClick = onQuitar,
+                            modifier = Modifier.size(ACCION_BUTTON_HEIGHT),
+                            shape = MaterialTheme.shapes.small,
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.error,
+                                contentColor = MaterialTheme.colorScheme.onError
+                            ),
+                            contentPadding = PaddingValues(0.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Outlined.Delete,
+                                contentDescription = "Eliminar camion"
+                            )
+                        }
+
+
+                    }
+                } else if (showQuitar) {
                     Spacer(Modifier.height(12.dp))
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                        IconButton(onClick = onQuitar) {
+                        Button(
+                            onClick = onQuitar,
+                            modifier = Modifier.size(ACCION_BUTTON_HEIGHT),
+                            shape = MaterialTheme.shapes.small,
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.error,
+                                contentColor = MaterialTheme.colorScheme.onError
+                            ),
+                            contentPadding = PaddingValues(0.dp)
+                        ) {
                             Icon(
                                 imageVector = Icons.Outlined.Delete,
                                 contentDescription = "Quitar del carrito"

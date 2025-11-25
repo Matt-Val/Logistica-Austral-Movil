@@ -16,6 +16,7 @@ import com.example.logistica_austral.repository.CamionRepository
 import com.example.logistica_austral.repository.UsuarioRepository
 
 // --- IMPORTACIONES DE LAS VISTAS (PANTALLAS) ---
+import com.example.logistica_austral.view.EditarCamionScreen
 import com.example.logistica_austral.view.FormularioCamionScreen
 import com.example.logistica_austral.view.HomeScreen
 import com.example.logistica_austral.view.LoginScreen
@@ -23,6 +24,7 @@ import com.example.logistica_austral.view.RegistroScreen
 
 // --- IMPORTACIONES DE LOS VIEWMODELS ---
 import com.example.logistica_austral.viewmodel.CamionViewModel
+import com.example.logistica_austral.viewmodel.EditarCamionViewModel
 import com.example.logistica_austral.viewmodel.LoginViewModel
 import com.example.logistica_austral.viewmodel.RegistroViewModel
 
@@ -30,7 +32,7 @@ import com.example.logistica_austral.viewmodel.RegistroViewModel
 import com.example.logistica_austral.ui.theme.LogisticaAustralTheme
 import com.example.logistica_austral.view.CarritoScreen
 import com.example.logistica_austral.view.ExplorarFlotaScreen
-import com.example.logistica_austral.view.EliminarCamionScreen
+import com.example.logistica_austral.view.VerCamionScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,6 +60,9 @@ class MainActivity : ComponentActivity() {
                 }
                 val camionViewModel: CamionViewModel = viewModel {
                     CamionViewModel(camionRepository)
+                }
+                val editarCamionViewModel: EditarCamionViewModel = viewModel {
+                    EditarCamionViewModel(camionRepository)
                 }
 
                 // CONFIGURACIÓN DE NAVEGACIÓN (NavHost)
@@ -107,8 +112,17 @@ class MainActivity : ComponentActivity() {
                     }
 
                     // Ruta para eliminar camión
-                    composable("eliminarCamion") {
-                        EliminarCamionScreen(nav = navController)
+                    composable("verCamion") {
+                        VerCamionScreen(nav = navController)
+                    }
+
+                    composable("editarCamion/{id}") { backStackEntry ->
+                        val id = backStackEntry.arguments?.getString("id")?.toIntOrNull() ?: 0
+                        EditarCamionScreen(
+                            navController = navController,
+                            viewModel = editarCamionViewModel,
+                            camionId = id
+                        )
                     }
                 }
             }

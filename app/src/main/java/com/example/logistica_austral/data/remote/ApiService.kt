@@ -10,6 +10,12 @@ interface ApiService {
     @GET("camion")
     suspend fun getCamiones(): List<Camion>
 
+    @GET("camion/{id}")
+    suspend fun getCamion(@Path("id") id: Int): Camion
+
+    @PUT("camion/{id}")
+    suspend fun updateCamion(@Path("id") id: Int, @Body camion: com.example.logistica_austral.data.model.CamionDto): Camion
+
     @DELETE("camion/{id}")
     suspend fun deleteCamion(@Path("id") id: Int)
 

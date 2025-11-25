@@ -137,36 +137,6 @@ class CamionViewModel(private val repository: CamionRepository) : ViewModel() {
     }
 
     // 4.- Función de Registro
-    fun registrarCamion() {
-        if (!validarFormulario()) { _mensaje.value= "Error: Revise todos los campos."; return }
-        val state = _uiState.value
-        val annioInt = state.annio.toIntOrNull() ?: 0
-        val capacidadInt = state.capacidad.toIntOrNull() ?: 0
-        val precioInt = state.precio.toIntOrNull() ?: 0
-        val nuevoCamion = Camion(
-            patente = state.patente,
-            marca = state.marca,
-            modelo = state.modelo,
-            annio = annioInt,
-            tipo = state.tipo,
-            capacidad = capacidadInt,
-            disponibilidad = state.disponibilidad,
-            estado = state.estado,
-            descripcion = state.descripcion,
-            traccion = state.traccion,
-            precio = precioInt,
-            imagenUri = state.imagenUri?.toString() // convierte Uri? a String?
-        )
-        viewModelScope.launch {
-            try {
-                repository.insertar(nuevoCamion)
-                _mensaje.value = "Camion ${nuevoCamion.patente} registrado con éxito!"
-            } catch (e: Exception) {
-                _mensaje.value = "Error al registrar camión: ${e.message ?: "desconocido"}" // evita crash
-            }
-        }
-    }
-
     fun registrarCamionRemotoConImagen(imagenFile: File?) {
         if (!validarFormulario()) { _mensaje.value = "Error: Revise todos los campos."; return }
         if (imagenFile == null) { _mensaje.value = "Debe seleccionar o tomar una imagen"; return }
@@ -187,9 +157,9 @@ class CamionViewModel(private val repository: CamionRepository) : ViewModel() {
         viewModelScope.launch {
             try {
                 val resultado = repository.crearRemotoConImagen(dto, imagenFile)
-                _mensaje.value = "Camión ${resultado.patente} creado remoto con éxito!"
+                _mensaje.value = "Camión ${resultado.patente} creado con éxito!"
             } catch (e: Exception) {
-                _mensaje.value = "Error remoto: ${e.message ?: "desconocido"}";
+                _mensaje.value = "Error servidor: ${e.message ?: "desconocido"}";
             }
         }
     }
