@@ -58,6 +58,28 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-gson:2.11.0")
     // corrutina para asincronicas
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0")
+    // Kotest - Para pruebas unitarias
+    testImplementation("io.kotest:kotest-runner-junit5:5.8.0")
+    testImplementation("io.kotest:kotest-assertions-core:5.8.0")
+
+    // JUnit5
+    testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
+
+    // Mock para simular repositorios y clases
+    testImplementation("io.mockk:mockk:1.13.8")
+
+    // Corrutinas Test (Necesario en ViewModels)
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
+
+    // Compose UI Test (Para interfaz)
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.6.2")
+    debugImplementation("androidx.compose.ui:ui-test-manifest:1.6.2")
+
+    androidTestImplementation("io.mockk:mockk-android:1.13.10")
+
+    // Asegúrate de tener estas también para las pruebas de UI
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.6.2")
+    debugImplementation("androidx.compose.ui:ui-test-manifest:1.6.2")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -73,4 +95,8 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
+}
+
+tasks.withType<Test>().configureEach {
+    useJUnitPlatform()
 }

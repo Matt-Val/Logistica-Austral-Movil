@@ -54,7 +54,7 @@ class RegistroViewModel(private val repository: UsuarioRepository) : ViewModel()
             esValido = false
         }
 
-        if (state.correo.isBlank() || !android.util.Patterns.EMAIL_ADDRESS.matcher(state.correo).matches()) {
+        if (state.correo.isBlank() || !state.correo.contains("@")) {
             _uiErrors.update { it.copy(esErrorCorreo = "Debe ser un correo válido") }
             esValido = false
         }
